@@ -1,11 +1,13 @@
-def add_product(products: list, name: str) -> dict:
+def add_product(products: list, name: str,
+                description: str, country: str) -> dict:
     """
         Добавление нового товара.
 
-        Принимает список всех продуктов и имя нового продукта.
-        Генерирует новый id, создаёт словарь товара с пустым списком
-        поставщиков и добавляет его в список.
-        Вовзвращает словарь нового товара.
+        Принимает список всех товаров, а также имя, описание и
+        страну производства нового товара.
+        Генерирует новый id, создаёт словарь товара
+        и добавляет его в список.
+        Возвращает словарь нового товара.
     """
     if products:
         new_id = max(product['id'] for product in products) + 1
@@ -15,21 +17,22 @@ def add_product(products: list, name: str) -> dict:
     new_product = {
         'id': new_id,
         'name': name,
-        'suppliers': []
+        'description': description,
+        'country': country
     }
 
     products.append(new_product)
     return new_product
 
 
-def find_product_by_name(products: list, query: str) -> list:
+def find_product_by_name(products: list, query: str) -> list | None:
     """
-        Поиск продукта(ов) по названию.
+        Поиск товара(ов) по названию.
 
-        Принимает список всех продуктов и запрос на поиск.
+        Принимает список всех товаров и запрос на поиск.
         Приводит запрос в нижний регистр,
-        находит все продукты с запросом в названии, добавяя их в список
-        Возвращает список найденных продуктов.
+        находит все товары с запросом в названии, добавляя их в список.
+        Возвращает список найденных товаров.
     """
     find_products = [product for product in products if query.lower() in
                      product['name'].lower()]
@@ -38,11 +41,11 @@ def find_product_by_name(products: list, query: str) -> list:
 
 def get_product_by_id(products: list, product_id: int) -> dict | None:
     """
-        Поиск продукта по id
+        Поиск товара по id.
 
-        Принимает список всех продуктов и id поискомого
-        Находит продукт по id
-        Возвращает продукт или None, если продукт не найден
+        Принимает список всех товаров и id искомого.
+        Находит товар по id.
+        Возвращает товар или None, если товар не найден.
     """
     for product in products:
         if product_id == product['id']:

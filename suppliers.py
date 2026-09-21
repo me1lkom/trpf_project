@@ -1,118 +1,55 @@
-def add_supplier_to_product(product: dict, name: str,
-                            price: float, delivery_time_days: int,
-                            min_lots: int, phone: str) -> dict:
+def add_supplier(suppliers: list, name: str, inn: str,
+                 phone: str, email: str) -> dict:
     """
-        Добавляем поставщика к товару.
+        Добавление нового поставщика.
 
-        Принимаем словарь товара и данные поставщика.
-        Создаём словарь поставщика и добавляем его в список товара.
-        Возвращаем список товара.
+        Принимает список всех поставщиков, имя, ИНН,
+        телефон и email нового поставщика.
+        Генерирует новый id, создаёт словарь поставщика
+        и добавляет его в список.
+        Возвращает словарь нового поставщика.
     """
+    if suppliers:
+        new_id = max(supplier['id'] for supplier in suppliers) + 1
+    else:
+        new_id = 1
+
     new_supplier = {
+        'id': new_id,
         'name': name,
-        'price': price,
-        'delivery_time_days': delivery_time_days,
-        'min_lots': min_lots,
+        'inn': inn,
+        'email': email,
         'phone': phone
     }
 
-    product['suppliers'].append(new_supplier)
-    return product
+    suppliers.append(new_supplier)
+    return new_supplier
 
 
-def find_suppliers_by_name(product: dict, query: str) -> list:
+def find_supplier_by_name(suppliers: list, query: str) -> list:
     """
         Поиск поставщика(ов) по названию.
 
-        Принимает словарь товара и запрос на поиск.
+        Принимает список всех поставщиков и запрос на поиск.
         Приводит запрос в нижний регистр,
-        находит всех поставщиков с запросом в названии, добавяя их в список
-        Возвращает список найденных продуктов.
+        находит всех поставщиков с запросом в названии, добавляя их в список.
+        Возвращает список найденных поставщиков.
     """
-    find_suppliers = [supplier for supplier in product if query.lower() in
+    find_suppliers = [supplier for supplier in suppliers if query.lower() in
                       supplier['name'].lower()]
+
     return find_suppliers
 
 
-def filter_suppliers_by_price(product: dict, max_price: float) -> list:
+def get_supplier_by_id(suppliers: list, supplier_id: int) -> dict | None:
     """
-        Фильтр по цене.
+        Поиск поставщика по id.
 
-        Принимает словарь товара и максимальную цену.
-        Создаёт пустой список для поставщиков, просматривает всех
-        поставщиков у товара сверяя цену с максимальной,
-        добавляет в список, если цена удовлетворяет.
-        Возвращает список поставщиков с удовлетворяющей ценой.
+        Принимает список всех поставщиков и id искомого.
+        Находит поставщика по id.
+        Возвращает поставщика или None, если поставщик не найден.
     """
-    filtered_suppliers = []
-    for supplier in product['suppliers']:
-        if supplier['price'] <= max_price:
-            filtered_suppliers.append(supplier)
-    return filtered_suppliers
-
-
-def filter_suppliers_by_delivery(product: dict, max_days: int) -> list:
-    """
-        Фильтр по сроку доставки.
-
-        Принимает словарь товара и максимальное количество дней доставки.
-        Создаёт пустой список для поставщиков, просматривает всех
-        поставщиков у товара сверяя количество дней с максимальным,
-        добавляет в список, если количество дней удовлетворяет.
-        Возвращает список поставщиков с удовлетворяющим
-        количеством дней доставки.
-    """
-    filtered_suppliers = []
-    for supplier in product['suppliers']:
-        if supplier['delivery_time_days'] <= max_days:
-            filtered_suppliers.append(supplier)
-    return filtered_suppliers
-
-
-def sort_suppliers_by_price(product: dict) -> list:
-    """
-        Сортировка поставщиков по цене.
-
-        Принимает словарь товара.
-        Сортирует поставщиков по цене.
-        Возвращает отрортированный список поставщиков.
-    """
-    sorted_suppliers_list = sorted(product['suppliers'],
-                                   key=lambda supplier: supplier['price'])
-    return sorted_suppliers_list
-
-
-def compare_prices(product: dict) -> dict | None:
-    """
-        Поиск лучшего по цене предложение от поставщика.
-
-        Принимает словарь товара.
-        Проверяет наличие поставщиков, ищет поставщика с минимальной ценой.
-        Возвращает словарь поствщика.
-    """
-    if not product['suppliers']:
-        return None
-
-    return min(product['suppliers'], key=lambda supplier: supplier['price'])
-
-
-def check_min_lot(supplier: dict, quantity: int) -> bool:
-    """
-        Проверка минимальной мартии поставщика с нужной к заказу.
-
-        Принимает словарь поставщика и необходимое количество товара.
-        Проверяет минимальную партию поставщика и нужную партию к заказу.
-        Возвразает ответ True или False.
-    """
-    return supplier['min_lots'] <= quantity
-
-
-def calculate_order_price(supplier: dict, quantity: int) -> float:
-    """
-        Расчёт стоимости заказа.
-
-        Принимает словарь поставщика и количество товара к заказу.
-        Перемножает цену поставщика на количество товара.
-        Возвращает сумму заказа.
-    """
-    return supplier['price'] * quantity
+    for supplier in suppliers:
+        if supplier_id == supplier['id']:
+            return supplier
+    return None

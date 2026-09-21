@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "name": "ИП Гербер",
+        "inn": "770123456789",
+        "phone": "+7-900-123-45-67",
+        "email": "gerber@example.com"
+    },
+    {
+        "id": 2,
+        "name": "ООО Мольберд",
+        "inn": "770987654321",
+        "phone": "+7-900-765-43-21",
+        "email": "molberd@example.com"
+    },
+    {
+        "id": 3,
+        "name": "ООО Ромашка",
+        "inn": "770555666777",
+        "phone": "+7-900-111-22-33",
+        "email": "romashka@example.com"
+    }
+]

@@ -1,0 +1,50 @@
+[
+    {
+        "id": 1,
+        "product_id": 1,
+        "supplier_id": 1,
+        "price": 1500.0,
+        "min_lots": 3,
+        "delivery_time_days": 5
+    },
+    {
+        "id": 2,
+        "product_id": 1,
+        "supplier_id": 2,
+        "price": 1450.0,
+        "min_lots": 10,
+        "delivery_time_days": 7
+    },
+    {
+        "id": 3,
+        "product_id": 1,
+        "supplier_id": 3,
+        "price": 1600.0,
+        "min_lots": 5,
+        "delivery_time_days": 3
+    },
+    {
+        "id": 4,
+        "product_id": 2,
+        "supplier_id": 1,
+        "price": 50.0,
+        "min_lots": 100,
+        "delivery_time_days": 3
+    },
+    {
+        "id": 5,
+        "product_id": 2,
+        "supplier_id": 3,
+        "price": 45.0,
+        "min_lots": 200,
+        "delivery_time_days": 4
+    },
+    {
+        "id": 6,
+        "product_id": 3,
+        "supplier_id": 2,
+        "price": 350.0,
+        "min_lots": 20,
+        "delivery_time_days": 6
+    }
+]
