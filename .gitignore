@@ -15,6 +15,7 @@ __pycache__/
 *$py.class
 *.so
 .Python
+.mypy_cache/
 
 # Виртуальные окружения и зависимости
 .env
@@ -57,6 +58,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+.flake8
 
 # Jupyter Notebook
 .ipynb_checkpoints

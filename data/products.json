@@ -1,0 +1,113 @@
+[
+    {
+        "id": 1,
+        "name": "Бумага А4",
+        "suppliers": [
+            {
+                "name": "ОАО Ромашка",
+                "price": 500.0,
+                "delivery_time_days": 3,
+                "min_lots": 100,
+                "phone": "79057891234"
+            },
+            {
+                "name": "ИП Гербер",
+                "price": 480.0,
+                "delivery_time_days": 5,
+                "min_lots": 50,
+                "phone": "79161234567"
+            },
+            {
+                "name": "ООО Мольберд",
+                "price": 520.0,
+                "delivery_time_days": 2,
+                "min_lots": 200,
+                "phone": "79262345678"
+            },
+            {
+                "name": "ООО Горка",
+                "price": 400.0,
+                "delivery_time_days": 3,
+                "min_lots": 5,
+                "phone": "79057891234"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Дверная ручка",
+        "suppliers": [
+            {
+                "name": "ООО ФурнитураПлюс",
+                "price": 350.0,
+                "delivery_time_days": 7,
+                "min_lots": 20,
+                "phone": "79373456789"
+            },
+            {
+                "name": "ИП Мастер",
+                "price": 320.0,
+                "delivery_time_days": 10,
+                "min_lots": 10,
+                "phone": "79484567890"
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Кабель USB C",
+        "suppliers": [
+            {
+                "name": "ООО ЭлектроТрейд",
+                "price": 150.0,
+                "delivery_time_days": 4,
+                "min_lots": 50,
+                "phone": "79595678901"
+            },
+            {
+                "name": "ИП Кабельный",
+                "price": 145.0,
+                "delivery_time_days": 6,
+                "min_lots": 100,
+                "phone": "79606789012"
+            },
+            {
+                "name": "ООО ТехноСнаб",
+                "price": 160.0,
+                "delivery_time_days": 3,
+                "min_lots": 30,
+                "phone": "79717890123"
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "name": "Стол офисный",
+        "suppliers": []
+    },
+    {
+        "id": 5,
+        "name": "Кресло офисное",
+        "suppliers": [
+            {
+                "name": "ООО МебельСервис",
+                "price": 5500.0,
+                "delivery_time_days": 14,
+                "min_lots": 5,
+                "phone": "79828901234"
+            },
+            {
+                "name": "ИП Комфорт",
+                "price": 5200.0,
+                "delivery_time_days": 21,
+                "min_lots": 3,
+                "phone": "79939012345"
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "name": "44",
+        "suppliers": []
+    }
+]
