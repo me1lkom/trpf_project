@@ -1,20 +1,22 @@
-from products import add_product, find_product_by_name, get_product_by_id
-from suppliers import (
+from models.products import (
+    add_product,
+    find_product_by_name,
+    get_product_by_id,
+)
+from models.suppliers import (
     add_supplier,
     find_supplier_by_name,
     get_supplier_by_id,
 )
-from offers import (
+from models.offers import (
     add_offer,
     find_offers_by_product,
     compare_prices,
     filter_offers_by_price,
     filter_offers_by_delivery,
     sort_offers_by_price,
-    check_min_lot,
-    calculate_order_price,
 )
-from users import add_user, find_user_by_name, get_user_by_id
+from models.users import add_user, find_user_by_name, get_user_by_id
 from storage import (
     load_products, save_products,
     load_suppliers, save_suppliers,
@@ -38,8 +40,7 @@ def show_products(products: list) -> None:
         print('Список товаров пуст.')
         return
     for p in products:
-        print(f'ID: {p["id"]}, {p["name"]} ({p["country"]}) — '
-              f'{p["description"]}')
+        print(f'ID: {p.id}, {p}')
 
 
 def show_suppliers(suppliers: list) -> None:
@@ -50,8 +51,7 @@ def show_suppliers(suppliers: list) -> None:
         print('Список поставщиков пуст.')
         return
     for s in suppliers:
-        print(f'ID: {s["id"]}, {s["name"]}, ИНН {s["inn"]}, '
-              f'{s["phone"]}, {s["email"]}')
+        print(f'ID: {s.id}, {s}')
 
 
 def show_offers(offers: list) -> None:
@@ -62,10 +62,7 @@ def show_offers(offers: list) -> None:
         print('Список предложений пуст.')
         return
     for o in offers:
-        print(f'ID: {o["id"]}, товар {o["product_id"]}, '
-              f'поставщик {o["supplier_id"]}, цена {o["price"]}, '
-              f'мин. партия {o["min_lots"]}, '
-              f'доставка {o["delivery_time_days"]} дн.')
+        print(f'ID: {o.id}, {o}')
 
 
 def show_users(users: list) -> None:
@@ -76,7 +73,7 @@ def show_users(users: list) -> None:
         print('Список пользователей пуст.')
         return
     for u in users:
-        print(f'ID: {u["id"]}, {u["name"]}, {u["email"]}')
+        print(f'ID: {u.id}, {u}')
 
 
 def menu_products(products: list) -> None:
@@ -158,7 +155,11 @@ def menu_suppliers(suppliers: list) -> None:
             print('Некорректный выбор.')
 
 
-def menu_offers(offers: list) -> None:
+def menu_offers(
+    offers: list,
+    products: list,
+    suppliers: list
+) -> None:
     """
         Подменю для работы с предложениями.
     """
@@ -181,64 +182,92 @@ def menu_offers(offers: list) -> None:
             show_offers(offers)
         elif choice == '2':
             product_id = input_int('ID товара: ')
+            product = get_product_by_id(products, product_id)
+            if not product:
+                print('Товар не найден.')
+                continue
             supplier_id = input_int('ID поставщика: ')
+            supplier = get_supplier_by_id(suppliers, supplier_id)
+            if not supplier:
+                print('Поставщик не найден.')
+                continue
             price = input_float('Цена: ')
             min_lots = input_int('Минимальная партия: ')
             delivery = input_int('Срок доставки (дней): ')
-            add_offer(offers, product_id, supplier_id,
+            add_offer(offers, product, supplier,
                       price, min_lots, delivery)
             save_offers(OFFERS_FILE, offers)
             print('Предложение добавлено.')
         elif choice == '3':
             product_id = input_int('ID товара: ')
-            show_offers(find_offers_by_product(offers, product_id))
+            product = get_product_by_id(products, product_id)
+            if not product:
+                print('Товар не найден.')
+                continue
+            show_offers(find_offers_by_product(offers, product))
         elif choice == '4':
             product_id = input_int('ID товара: ')
+            product = get_product_by_id(products, product_id)
+            if not product:
+                print('Товар не найден.')
+                continue
             max_price = input_float('Максимальная цена: ')
             show_offers(
-                filter_offers_by_price(offers, product_id, max_price)
+                filter_offers_by_price(offers, product, max_price)
             )
         elif choice == '5':
             product_id = input_int('ID товара: ')
+            product = get_product_by_id(products, product_id)
+            if not product:
+                print('Товар не найден.')
+                continue
             max_days = input_int('Максимальный срок доставки: ')
             show_offers(
-                filter_offers_by_delivery(offers, product_id, max_days)
+                filter_offers_by_delivery(offers, product, max_days)
             )
         elif choice == '6':
             product_id = input_int('ID товара: ')
-            show_offers(sort_offers_by_price(offers, product_id))
+            product = get_product_by_id(products, product_id)
+            if not product:
+                print('Товар не найден.')
+                continue
+            show_offers(sort_offers_by_price(offers, product))
         elif choice == '7':
             product_id = input_int('ID товара: ')
-            best = compare_prices(offers, product_id)
+            product = get_product_by_id(products, product_id)
+            if not product:
+                print('Товар не найден.')
+                continue
+            best = compare_prices(offers, product)
             if best:
-                print(f'Лучшее предложение: ID {best["id"]}, '
-                      f'поставщик {best["supplier_id"]}, '
-                      f'цена {best["price"]}')
+                print(f'Лучшее предложение: ID {best.id}, '
+                      f'поставщик {best.supplier.name}, '
+                      f'цена {best.price}')
             else:
                 print('Предложений по товару нет.')
         elif choice == '8':
             offer_id = input_int('ID предложения: ')
             quantity = input_int('Количество: ')
             offer = next(
-                (o for o in offers if o['id'] == offer_id), None
+                (o for o in offers if o.id == offer_id), None
             )
             if not offer:
                 print('Предложение не найдено.')
                 continue
-            if check_min_lot(offer, quantity):
+            if offer.check_min_lot(quantity):
                 print('Партия подходит.')
             else:
-                print(f'Партия мала (минимум {offer["min_lots"]}).')
+                print(f'Партия мала (минимум {offer.min_lots}).')
         elif choice == '9':
             offer_id = input_int('ID предложения: ')
             quantity = input_int('Количество: ')
             offer = next(
-                (o for o in offers if o['id'] == offer_id), None
+                (o for o in offers if o.id == offer_id), None
             )
             if not offer:
                 print('Предложение не найдено.')
                 continue
-            total = calculate_order_price(offer, quantity)
+            total = offer.calculate_order_price(quantity)
             print(f'Итого: {total} руб.')
         elif choice == '0':
             break
@@ -290,7 +319,7 @@ def main() -> None:
     """
     products = load_products(PRODUCTS_FILE)
     suppliers = load_suppliers(SUPPLIERS_FILE)
-    offers = load_offers(OFFERS_FILE)
+    offers = load_offers(OFFERS_FILE, products, suppliers)
     users = load_users(USERS_FILE)
 
     while True:
@@ -308,7 +337,7 @@ def main() -> None:
         elif choice == '2':
             menu_suppliers(suppliers)
         elif choice == '3':
-            menu_offers(offers)
+            menu_offers(offers, products, suppliers)
         elif choice == '4':
             menu_users(users)
         elif choice == '0':
