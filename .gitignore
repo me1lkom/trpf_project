@@ -68,3 +68,6 @@ cover/
 .vscode/
 *.swp
 *.swo
+
+# DB
+*.sqlite3

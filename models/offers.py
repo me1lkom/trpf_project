@@ -6,6 +6,7 @@ class Offer:
     """
         Предложение.
     """
+
     def __init__(
         self,
         offer_id: int,
@@ -76,6 +77,19 @@ def add_offer(offers: list[Offer], product: Product, supplier: Supplier,
 
     offers.append(new_offer)
     return new_offer
+
+
+def get_offer_by_id(offers: list[Offer], offer_id: int) -> Offer | None:
+    """
+    Поиск предложения по ID.
+
+    Возвращает объект Offer или None, если предложение не найдено.
+    """
+    for offer in offers:
+        if offer.id == offer_id:
+            return offer
+
+    return None
 
 
 def find_offers_by_product(offers: list[Offer],
