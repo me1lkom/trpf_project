@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
 {% block title %}
-    {% if product %}
+    {% if supplier %}
         {{ supplier.name }} — Сервис сравнения предложений
     {% else %}
-        Товар не найден
+        Поставщик не найден
     {% endif %}
 {% endblock %}
 
@@ -29,8 +29,8 @@
     </div>
 
     {% else %}
-        <h1 class="text-danger">Поставщикы не найден</h1>
-        <p>Постащик с указанным идентификатором отсутствует.</p>
+        <h1 class="text-danger">Поставщик не найден</h1>
+        <p>Поставщик с указанным идентификатором отсутствует.</p>
     {% endif %}
     <a href="{% url 'suppliers:list' %}" class="btn btn-outline-secondary mt-3">
         ← к списку поставщиков

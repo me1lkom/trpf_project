@@ -1,27 +1,27 @@
 {% extends "base.html" %}
 
 {% block title %}
-    Главная - Сервис сравнения предложений
+Главная - Сервис сравнения предложений
 {% endblock %}
 
 {% block content %}
-    <h1 class="display-4">Сервис сравнения предложений</h1>
+<h1 class="display-4">Сервис сравнения предложений</h1>
 
-    <p class="lead">
-        Выбор выгодных предложений поставщиков.
-    </p>
+<p class="lead">
+    Выбор выгодных предложений поставщиков.
+</p>
 
-    <p>Основные разделы:</p>
+<p>Основные разделы:</p>
 
-    <a href="/products/" class="btn btn-primary me-2">
-        Товары
-    </a>
+<a href="{% url 'products:list' %}" class="btn btn-primary me-2">
+    Товары
+</a>
 
-    <a href="/suppliers/" class="btn btn-secondary me-2">
-        Поставщики
-    </a>
+<a href="{% url 'suppliers:list' %}" class="btn btn-secondary me-2">
+    Поставщики
+</a>
 
-    <a href="/offers/" class="btn btn-secondary">
-        Предложения
-    </a>
+<a href="{% url 'offers:list' %}" class=" btn btn-secondary">
+    Предложения
+</a>
 {% endblock %}

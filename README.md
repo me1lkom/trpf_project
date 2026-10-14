@@ -188,6 +188,7 @@ trpf_project/
 │
 ├── templates/              # Общие Django-шаблоны
 │   ├── base.html
+|   ├── 404.html
 │   └── includes/
 │       └── navigation.html
 │

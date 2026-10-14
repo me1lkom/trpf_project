@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    {% if product %}
+    {% if offer %}
         {{ offer.product.name }} — Сервис сравнения предложений
     {% else %}
         Предложение не найдено
@@ -14,7 +14,6 @@
             <div class="card-body">
                 <h5 class="card-title">{{ offer.product.name }} —
                     {{ offer.supplier.name }}</h5>
-                <p class="card-text">
                 <h6>Предложение</h6>
                 <ul class="list-group">
                     <li class="list-group-item">
@@ -34,8 +33,6 @@
                         {{ offer.delivery_time_days }}
                     </li>
                 </ul>
-                </p>
-                <p class="card-text">
                 <h6>Товар</h6>
                 <ul class="list-group">
                     <li class="list-group-item">
@@ -51,8 +48,6 @@
                         {{ offer.product.country }}
                     </li>
                 </ul>
-                </p>
-                <p class="card-text">
                 <h6>Поставщик</h6>
                 <ul class="list-group">
                     <li class="list-group-item">
@@ -72,7 +67,6 @@
                         {{ offer.supplier.email }}
                     </li>
                 </ul>
-                </p>
             </div>
         </div>
     {% else %}
