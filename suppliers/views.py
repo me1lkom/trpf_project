@@ -1,28 +1,17 @@
-from django.http import HttpResponse
+from django.shortcuts import render
 
-from homepage.views import page
 from storage import load_suppliers
 from models.suppliers import get_supplier_by_id
 
 
 def supplier_list(request):
-    items = ''
+    suppliers = load_suppliers('data/suppliers.json')
 
-    for supplier in load_suppliers('data/suppliers.json'):
-        items += (
-            '<li class="list-group-item">'
-            f'<a href="/suppliers/{supplier.id}/">'
-            f'{supplier.name} — {supplier.phone}'
-            '</a>'
-            '</li>'
-        )
+    context = {
+        "suppliers": suppliers,
+    }
 
-    content = f"""
-        <h1>Поставщики</h1>
-        <ul class="list-group">{items}</ul>
-    """
-
-    return HttpResponse(page('Список поставщиков', content))
+    return render(request, "suppliers/supplier_list.html", context)
 
 
 def supplier_details(request, supplier_id):
@@ -30,37 +19,13 @@ def supplier_details(request, supplier_id):
 
     supplier = get_supplier_by_id(suppliers, supplier_id)
 
-    if supplier is None:
-        content = """
-        <h1 class="text-danger">Поставщик не найден</h1>
-        <a href="/suppliers/" class="btn btn-outline-secondary">
-            ← к списку поставщиков
-        </a>
-        """
+    context = {
+        "supplier": supplier,
+    }
 
-        return HttpResponse(page('Поставщик не найден', content), status=404)
-
-    content = f"""
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">{supplier.name}</h5>
-                <p class="card-text">
-                    <strong>ID:</strong> {supplier.id}
-                </p>
-                <p class="card-text">
-                    <strong>ИНН:</strong> {supplier.inn}
-                </p>
-                <p class="card-text">
-                    <strong>Телефон:</strong> {supplier.phone}
-                </p>
-                <p class="card-text">
-                    <strong>Email:</strong> {supplier.email}
-                </p>
-                <a href="/suppliers/" class="btn btn-outline-secondary">
-                    ← к списку поставщиков
-                </a>
-            </div>
-        </div>
-    """
-
-    return HttpResponse(page(supplier.name, content))
+    return render(
+        request,
+        'suppliers/supplier_detail.html',
+        context,
+        status=404 if supplier is None else 200,
+    )

@@ -148,7 +148,14 @@
 
 Для маршрутизации используются файлы `urls.py`. Обработка HTTP-запросов выполняется view-функциями, расположенными в `views.py` соответствующих приложений.
 
-HTML-страницы формируются через общий каркас `page()` из `homepage/views.py`. Для оформления интерфейса используется **Bootstrap 5.3**.
+
+Для формирования HTML-страниц используется Django Template Language (DTL). Общая структура интерфейса определена в базовом шаблоне `base.html`, от которого наследуются шаблоны отдельных страниц с помощью `{% extends %}` и `{% block %}`.
+
+Повторяющиеся элементы интерфейса вынесены в подключаемые шаблоны с использованием `{% include %}`. Данные передаются из view-функций в шаблоны через словарь `context`, а для их отображения используются циклы `{% for %}`, условия `{% if %}` и фильтры `length` и `default`.
+
+Для формирования ссылок используются именованные маршруты и пространства имён приложений (`app_name`) с тегом `{% url %}`.
+
+Интерфейс оформлен с использованием Bootstrap 5.3 и собственных CSS-стилей. Статические файлы подключаются средствами Django через `{% load static %}` и `{% static %}`. В проекте используются собственный CSS, JavaScript для отображения текущего года и изображение логотипа.
 
 При обращении к несуществующему идентификатору соответствующая view-функция возвращает HTTP 404. Для несуществующих URL настроен общий обработчик `handler404`.
 
@@ -179,19 +186,53 @@ trpf_project/
 │   ├── asgi.py
 │   └── wsgi.py
 │
-├── homepage/               # Главная страница и обработчик 404
+├── templates/              # Общие Django-шаблоны
+│   ├── base.html
+│   └── includes/
+│       └── navigation.html
+│
+├── homepage/
+│   ├── templates/
+│   │   └── homepage/
+│   │       └── index.html
+│   ├── static/
+│   │   └── homepage/
+│   │       ├── css/
+│   │       │   └── style.css
+│   │       ├── js/
+│   │       │   └── main.js
+│   │       └── img/
+│   │           └── logo.png
 │   ├── views.py
 │   └── urls.py
 │
-├── products/               # Django-приложение товаров
+├── products/
+│   ├── templates/
+│   │   └── products/
+│   │       ├── includes/
+│   │       │   └── product_card.html
+│   │       ├── product_list.html
+│   │       └── product_detail.html
 │   ├── views.py
 │   └── urls.py
 │
-├── suppliers/              # Django-приложение поставщиков
+├── suppliers/
+│   ├── templates/
+│   │   └── suppliers/
+│   │       ├── includes/
+│   │       │   └── supplier_card.html
+│   │       ├── supplier_list.html
+│   │       └── supplier_detail.html
 │   ├── views.py
 │   └── urls.py
 │
-├── offers/                 # Django-приложение предложений
+├── offers/
+│   ├── templates/
+│   │   └── offers/
+│   │       ├── includes/
+│   │       │   └── offer_card.html
+│   │       ├── offer_list.html
+│   │       └── offer_detail.html
 │   ├── views.py
 │   └── urls.py
 │
@@ -214,11 +255,11 @@ trpf_project/
 │   ├── test_offers.py
 │   └── test_users.py
 │
-├── main.py                 # Запуск консольной версии
-├── manage.py               # Управление Django-проектом
-├── storage.py              # Загрузка и сохранение данных
-├── utils.py                # Вспомогательные функции
-├── requirements.txt        # Зависимости проекта
+├── main.py
+├── manage.py
+├── storage.py
+├── utils.py
+├── requirements.txt
 └── README.md
 ```
 
@@ -338,6 +379,13 @@ python3 -m flake8 .
 - Страницы списков и отдельных объектов.
 - Навигация между основными разделами.
 - HTML-интерфейс с использованием Bootstrap.
+- HTML-шаблоны Django с наследованием от `base.html`.
+- Подключаемые шаблоны для навигации и карточек объектов.
+- Передача данных в шаблоны через контекст.
+- Использование циклов, условий и фильтров Django Template Language.
+- Именованные URL и пространства имён приложений.
+- Собственные CSS-стили и статические изображения.
+- JavaScript для отображения текущего года.
 - Обработка ошибок HTTP 404.
 
 **На данном этапе не реализованы:**

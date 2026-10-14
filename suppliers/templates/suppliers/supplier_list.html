@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Поставщики
+{% endblock %}
+
+{% block content %}
+    <h1>Постащики</h1>
+
+    {% for supplier in suppliers %}
+
+        {% include "suppliers/includes/supplier_card.html" %}
+
+        {% empty %}
+        <p>Поставщики не найдены</p>
+    {% endfor %}
+{% endblock %}

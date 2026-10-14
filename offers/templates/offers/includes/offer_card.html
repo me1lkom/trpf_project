@@ -1,0 +1,21 @@
+
+<article class="card offer-card mb-3">
+
+    <div class="card-body">
+        <h4 class="card-title">
+            Товар: {{ offer.product.name }}
+        </h4>
+
+        <h4 class="card-text">
+            Поставщик: {{ offer.supplier.name }}
+        </h4>
+
+        <a
+            href="{% url 'offers:detail' offer.id %}"
+            class="btn btn-primary"
+        >
+            Подробнее
+        </a>
+    </div>
+
+</article>

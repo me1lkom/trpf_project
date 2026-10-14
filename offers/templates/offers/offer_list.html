@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Список предложений
+{% endblock %}
+
+
+{% block content %}
+    <h1>Предложения</h1>
+
+    {% for offer in offers %}
+        {% include "offers/includes/offer_card.html" %}
+    {% empty %}
+        <p>Продложения не найдены.</p>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,43 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+    {% if product %}
+        {{ product.name }} — Сервис сравнения предложений
+    {% else %}
+        Товар не найден
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if product %}
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title">
+                    {{ product.name }}
+                </h1>
+
+                <p class="card-text">
+                    <strong>ID:</strong> {{ product.id }}
+                </p>
+
+                <p class="card-text">
+                    <strong>Описание:</strong> {{ product.description }}
+                </p>
+
+                <p class="card-text">
+                    <strong>Страна производства:</strong>
+                    {{ product.country }}
+                </p>
+            </div>
+        </div>
+    {% else %}
+        <h1 class="text-danger">Товар не найден</h1>
+        <p>Товар с указанным идентификатором отсутствует.</p>
+    {% endif %}
+
+    <a href="{% url 'products:list' %}"
+       class="btn btn-outline-secondary mt-3">
+        ← к списку товаров
+    </a>
+{% endblock %}

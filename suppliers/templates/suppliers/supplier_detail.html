@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if product %}
+        {{ supplier.name }} — Сервис сравнения предложений
+    {% else %}
+        Товар не найден
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if supplier %}
+    <div class="card">
+        <div class="card-body">
+            <h1 class="card-title">{{ supplier.name }}</h1>
+            <p class="card-text">
+                <strong>ID:</strong> {{ supplier.id }}
+            </p>
+            <p class="card-text">
+                <strong>ИНН:</strong> {{ supplier.inn }}
+            </p>
+            <p class="card-text">
+                <strong>Телефон:</strong> {{ supplier.phone }}
+            </p>
+            <p class="card-text">
+                <strong>Email:</strong> {{ supplier.email }}
+            </p>
+        </div>
+    </div>
+
+    {% else %}
+        <h1 class="text-danger">Поставщикы не найден</h1>
+        <p>Постащик с указанным идентификатором отсутствует.</p>
+    {% endif %}
+    <a href="{% url 'suppliers:list' %}" class="btn btn-outline-secondary mt-3">
+        ← к списку поставщиков
+    </a>
+{% endblock %}

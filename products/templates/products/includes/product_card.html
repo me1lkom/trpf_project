@@ -1,0 +1,15 @@
+<article class="card product-card mb-3">
+    <div class="card-body">
+        <h4 class="card-title">
+            {{ product.name }}
+        </h4>
+
+        <p class="card-text">
+            Страна производства: {{ product.country|default:"Не указана" }}
+        </p>
+
+        <a href="{% url 'products:detail' product.id %}" class="btn btn-primary">
+            Подробнее
+        </a>
+    </div>
+</article>

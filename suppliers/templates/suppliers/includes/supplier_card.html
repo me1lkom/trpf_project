@@ -1,0 +1,19 @@
+
+<article class="card supplier-card mb-3">
+    <div class="card-body">
+        <h4 class="card-title">
+            {{ supplier.name }}
+        </h4>
+
+        <p class="card-text">
+            Номер телефона: {{ supplier.phone }}
+        </p>
+
+        <a
+            href="{% url 'suppliers:detail' supplier.id %}"
+            class="btn btn-primary"
+        >
+            Подробнее
+        </a>
+    </div>
+</article>
