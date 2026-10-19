@@ -8,10 +8,10 @@ def product_list(request):
     products = load_products('data/products.json')
 
     context = {
-        "products": products,
+        'products': products,
     }
 
-    return render(request, "products/product_list.html", context)
+    return render(request, 'products/product_list.html', context)
 
 
 def product_details(request, product_id):
