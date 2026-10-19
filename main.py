@@ -1,14 +1,17 @@
 from models.products import (
+    Product,
     add_product,
     find_product_by_name,
     get_product_by_id,
 )
 from models.suppliers import (
+    Supplier,
     add_supplier,
     find_supplier_by_name,
     get_supplier_by_id,
 )
 from models.offers import (
+    Offer,
     add_offer,
     find_offers_by_product,
     compare_prices,
@@ -16,7 +19,12 @@ from models.offers import (
     filter_offers_by_delivery,
     sort_offers_by_price,
 )
-from models.users import add_user, find_user_by_name, get_user_by_id
+from models.users import (
+        User,
+        add_user,
+        find_user_by_name,
+        get_user_by_id
+    )
 from storage import (
     load_products, save_products,
     load_suppliers, save_suppliers,
@@ -32,7 +40,7 @@ OFFERS_FILE = 'data/offers.json'
 USERS_FILE = 'data/users.json'
 
 
-def show_products(products: list) -> None:
+def show_products(products: list[Product]) -> None:
     """
         Вывести список товаров.
     """
@@ -43,7 +51,7 @@ def show_products(products: list) -> None:
         print(f'ID: {p.id}, {p}')
 
 
-def show_suppliers(suppliers: list) -> None:
+def show_suppliers(suppliers: list[Supplier]) -> None:
     """
         Вывести список поставщиков.
     """
@@ -54,7 +62,7 @@ def show_suppliers(suppliers: list) -> None:
         print(f'ID: {s.id}, {s}')
 
 
-def show_offers(offers: list) -> None:
+def show_offers(offers: list[Offer]) -> None:
     """
         Вывести список предложений.
     """
@@ -65,7 +73,7 @@ def show_offers(offers: list) -> None:
         print(f'ID: {o.id}, {o}')
 
 
-def show_users(users: list) -> None:
+def show_users(users: list[User]) -> None:
     """
         Вывести список пользователей.
     """
@@ -76,7 +84,7 @@ def show_users(users: list) -> None:
         print(f'ID: {u.id}, {u}')
 
 
-def menu_products(products: list) -> None:
+def menu_products(products: list[Product]) -> None:
     """
         Подменю для работы с товарами.
     """
@@ -115,7 +123,7 @@ def menu_products(products: list) -> None:
             print('Некорректный выбор.')
 
 
-def menu_suppliers(suppliers: list) -> None:
+def menu_suppliers(suppliers: list[Supplier]) -> None:
     """
         Подменю для работы с поставщиками.
     """
@@ -156,9 +164,9 @@ def menu_suppliers(suppliers: list) -> None:
 
 
 def menu_offers(
-    offers: list,
-    products: list,
-    suppliers: list
+    offers: list[Offer],
+    products: list[Product],
+    suppliers: list[Supplier]
 ) -> None:
     """
         Подменю для работы с предложениями.
@@ -275,7 +283,7 @@ def menu_offers(
             print('Некорректный выбор.')
 
 
-def menu_users(users: list) -> None:
+def menu_users(users: list[User]) -> None:
     """
         Подменю для работы с пользователями.
     """

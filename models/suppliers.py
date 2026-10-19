@@ -1,3 +1,6 @@
+from typing import Any
+
+
 class Supplier:
     """
         Поставщики.
@@ -29,7 +32,7 @@ class Supplier:
         return f'{self.name} (ИНН {self.inn}, тел. {self.phone})'
 
     @classmethod
-    def from_data(cls, data: dict) -> 'Supplier':
+    def from_data(cls, data: dict[str, Any]) -> 'Supplier':
         """
             Создание поставщика из словаря JSON.
 

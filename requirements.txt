@@ -1,3 +1,5 @@
 flake8>=7.0
 pytest>=8.0
 Django==5.2.*
+mypy>=1.18
+django-stubs>=5.2,<6

@@ -1,10 +1,12 @@
 import json
-from models import Product, Supplier, Offer, User
-from models.products import get_product_by_id
-from models.suppliers import get_supplier_by_id
+from typing import Any, cast
+from models.products import Product, get_product_by_id
+from models.suppliers import Supplier, get_supplier_by_id
+from models.users import User
+from models.offers import Offer
 
 
-def load_data(filename: str) -> list:
+def load_data(filename: str) -> list[dict[str, Any]]:
     """
         Загрузка данных из JSON-файла.
 
@@ -14,7 +16,7 @@ def load_data(filename: str) -> list:
     """
     try:
         with open(filename, 'r', encoding='utf-8') as file:
-            return json.load(file)
+            return cast(list[dict[str, Any]], json.load(file))
     except FileNotFoundError:
         print(f'Файл {filename} не найден. Начинаем с пустого списка.')
         return []
@@ -23,7 +25,7 @@ def load_data(filename: str) -> list:
         return []
 
 
-def save_data(filename: str, data: list) -> None:
+def save_data(filename: str, data: list[dict[str, Any]]) -> None:
     """
         Сохранение данных в JSON-файл.
 

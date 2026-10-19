@@ -1,25 +1,26 @@
 from django.shortcuts import render
+from django.http import HttpRequest, HttpResponse
 
 from storage import load_suppliers
-from models.suppliers import get_supplier_by_id
+from models.suppliers import Supplier, get_supplier_by_id
 
 
-def supplier_list(request):
+def supplier_list(request: HttpRequest) -> HttpResponse:
     suppliers = load_suppliers('data/suppliers.json')
 
-    context = {
+    context: dict[str, list[Supplier]] = {
         "suppliers": suppliers,
     }
 
     return render(request, "suppliers/supplier_list.html", context)
 
 
-def supplier_details(request, supplier_id):
+def supplier_details(request: HttpRequest, supplier_id: int) -> HttpResponse:
     suppliers = load_suppliers('data/suppliers.json')
 
     supplier = get_supplier_by_id(suppliers, supplier_id)
 
-    context = {
+    context: dict[str, Supplier | None] = {
         "supplier": supplier,
     }
 

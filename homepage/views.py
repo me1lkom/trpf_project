@@ -1,11 +1,12 @@
 from django.shortcuts import render
+from django.http import HttpRequest, HttpResponse
 
 
-def index(request):
+def index(request: HttpRequest) -> HttpResponse:
     return render(request, 'homepage/index.html')
 
 
-def page_not_found(request, exception):
+def page_not_found(request: HttpRequest, exception: Exception) -> HttpResponse:
     return render(
         request,
         '404.html',

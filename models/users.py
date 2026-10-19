@@ -1,3 +1,6 @@
+from typing import Any
+
+
 class User:
     """
         Пользователи.
@@ -24,7 +27,7 @@ class User:
         return f'{self.name} ({self.email})'
 
     @classmethod
-    def from_data(cls, data: dict) -> 'User':
+    def from_data(cls, data: dict[str, Any]) -> 'User':
         """
             Создание пользователя из словаря JSON.
 

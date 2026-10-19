@@ -2,9 +2,9 @@ from models.suppliers import add_supplier, get_supplier_by_id
 from models.suppliers import Supplier
 
 
-def test_add_supplier():
+def test_add_supplier() -> None:
     """Добавление поставщика возвращает объект Supplier."""
-    suppliers = []
+    suppliers: list[Supplier] = []
     supplier = add_supplier(suppliers, 'ИП Гербер', '770123456789',
                             '+7-900-123-45-67', 'gerber@example.com')
     assert isinstance(supplier, Supplier)
@@ -12,9 +12,9 @@ def test_add_supplier():
     assert supplier.inn == '770123456789'
 
 
-def test_get_supplier_by_id():
+def test_get_supplier_by_id() -> None:
     """Поиск по id возвращает нужного поставщика."""
-    suppliers = []
+    suppliers: list[Supplier] = []
     supplier = add_supplier(suppliers, 'ИП Гербер', '770123456789',
                             '+7-900-123-45-67', 'gerber@example.com')
     found = get_supplier_by_id(suppliers, supplier.id)

@@ -1,3 +1,6 @@
+from typing import Any
+
+
 class Product:
     """
         Товары.
@@ -27,7 +30,7 @@ class Product:
         return f'{self.name} ({self.country})'
 
     @classmethod
-    def from_data(cls, data: dict) -> 'Product':
+    def from_data(cls, data: dict[str, Any]) -> 'Product':
         """
             Создание товара из словаря JSON.
 
