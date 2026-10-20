@@ -25,7 +25,7 @@ def supplier_list(request: HttpRequest) -> HttpResponse:
             """
         ).fetchall()
     else:
-        suppliers: list[sqlite3.Row] = conn.execute(
+        suppliers = conn.execute(
             """
             SELECT
                 supplier_id,
