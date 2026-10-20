@@ -1,21 +1,36 @@
-
 <article class="card offer-card mb-3">
-
     <div class="card-body">
         <h4 class="card-title">
-            Товар: {{ offer.product.name }}
+            {{ offer.product_name }}
         </h4>
 
-        <h4 class="card-text">
-            Поставщик: {{ offer.supplier.name }}
-        </h4>
+        <p class="card-text">
+            <strong>Поставщик:</strong>
+            {{ offer.supplier_name }}
+        </p>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <strong>Цена:</strong>
+                {{ offer.price }} ₽
+            </div>
+
+            <div class="col-md-4">
+                <strong>Минимальная партия:</strong>
+                {{ offer.min_lots }}
+            </div>
+
+            <div class="col-md-4">
+                <strong>Срок доставки:</strong>
+                {{ offer.delivery_time_days }} дней
+            </div>
+        </div>
 
         <a
-            href="{% url 'offers:detail' offer.id %}"
+            href="{% url 'offers:detail' offer.offer_id %}"
             class="btn btn-primary"
         >
             Подробнее
         </a>
     </div>
-
 </article>

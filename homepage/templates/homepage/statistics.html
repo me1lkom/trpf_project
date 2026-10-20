@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Статистика — Сервис сравнения предложений
+{% endblock %}
+
+{% block content %}
+  <h1 class="mb-4">Статистика сервиса</h1>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h3 class="card-title">Общая статистика</h3>
+
+      <p class="card-text">
+        <strong>Всего товаров:</strong>
+        {{ count_products.count_products }}
+      </p>
+
+      <p class="card-text">
+        <strong>Всего поставщиков:</strong>
+        {{ count_suppliers.count_suppliers }}
+      </p>
+
+      <p class="card-text">
+        <strong>Всего пользователей:</strong>
+        {{ count_users.count_users }}
+      </p>
+
+      <p class="card-text">
+        <strong>Всего предложений:</strong>
+        {{ count_offers.count_offers }}
+      </p>
+    </div>
+  </div>
+
+  <h3>Количество предложений по товарам</h3>
+
+  <table class="table table-striped mb-4">
+    <thead>
+      <tr>
+        <th>Товар</th>
+        <th>Количество предложений</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in offers_to_products %}
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>{{ item.count_offers }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="2">Данные отсутствуют.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h3>Количество предложений по поставщикам</h3>
+
+  <table class="table table-striped mb-4">
+    <thead>
+      <tr>
+        <th>Поставщик</th>
+        <th>Количество предложений</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in offers_to_suppliers %}
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>{{ item.count_offers }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="2">Данные отсутствуют.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

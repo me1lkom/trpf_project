@@ -8,7 +8,7 @@
             Страна производства: {{ product.country|default:"Не указана" }}
         </p>
 
-        <a href="{% url 'products:detail' product.id %}" class="btn btn-primary">
+        <a href="{% url 'products:detail' product.product_id %}" class="btn btn-primary">
             Подробнее
         </a>
     </div>

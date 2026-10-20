@@ -1,43 +1,115 @@
-
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block title %}
-    {% if product %}
-        {{ product.name }} — Сервис сравнения предложений
-    {% else %}
-        Товар не найден
-    {% endif %}
+  {% if product %}
+    {{ product.name }} — Сервис сравнения предложений
+  {% else %}
+    Товар не найден
+  {% endif %}
 {% endblock %}
 
 {% block content %}
-    {% if product %}
-        <div class="card">
-            <div class="card-body">
-                <h1 class="card-title">
-                    {{ product.name }}
-                </h1>
+  {% if product %}
+    <div class="card">
+      <div class="card-body">
+        <h1 class="card-title">{{ product.name }}</h1>
 
-                <p class="card-text">
-                    <strong>ID:</strong> {{ product.id }}
-                </p>
+        <p class="card-text">
+          <strong>ID:</strong> {{ product.product_id }}
+        </p>
 
-                <p class="card-text">
-                    <strong>Описание:</strong> {{ product.description }}
-                </p>
+        <p class="card-text">
+          <strong>Описание:</strong> {{ product.description }}
+        </p>
 
-                <p class="card-text">
-                    <strong>Страна производства:</strong>
-                    {{ product.country }}
-                </p>
-            </div>
+        <p class="card-text">
+          <strong>Страна производства:</strong>
+          {{ product.country|default:'Не указана' }}
+        </p>
+      </div>
+
+      <div class="card-body">
+        <h3>Заказчик</h3>
+        <p class="card-text">
+          <strong>Имя / название:</strong> {{ product.buyers_name }}
+        </p>
+
+        <p class="card-text">
+          <strong>Тип заказчика:</strong>
+          {{ product.buyers_type }}
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-4 mb-3">
+      <h3>Предложения</h3>
+
+      <div class="btn-group" role="group">
+        <a href="?sort=default" class="btn btn-outline-primary">По умолчанию</a>
+        <a href="?sort=price" class="btn btn-outline-primary">По цене</a>
+        <a href="?sort=delivery" class="btn btn-outline-primary">По сроку доставки</a>
+      </div>
+    </div>
+    {% if offers %}
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Статистика цен</h5>
+
+          <p class="card-text">
+            <strong>Минимальная цена:</strong>
+            {{ price_stat.min_price }} ₽
+          </p>
+
+          <p class="card-text">
+            <strong>Максимальная цена:</strong>
+            {{ price_stat.max_price }} ₽
+          </p>
+
+          <p class="card-text">
+            <strong>Средняя цена:</strong>
+            {{ price_stat.avg_price }} ₽
+          </p>
+
+          <hr />
+
+          <p class="card-text">
+            <strong>Всего предложений:</strong>
+            {{ offers|length }}
+          </p>
         </div>
-    {% else %}
-        <h1 class="text-danger">Товар не найден</h1>
-        <p>Товар с указанным идентификатором отсутствует.</p>
+      </div>
     {% endif %}
+    {% for offer in offers %}
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">{{ offer.supplier_name }}</h5>
 
-    <a href="{% url 'products:list' %}"
-       class="btn btn-outline-secondary mt-3">
-        ← к списку товаров
-    </a>
+          <ul class="list-group">
+            <li class="list-group-item">
+              <strong>Цена:</strong> {{ offer.price }} ₽
+            </li>
+            <li class="list-group-item">
+              <strong>Минимальное количество:</strong>
+              {{ offer.min_lots }}
+            </li>
+            <li class="list-group-item">
+              <strong>Срок доставки:</strong>
+              {{ offer.delivery_time_days }} дней
+            </li>
+            <li class="list-group-item">
+              <strong>Телефон:</strong>
+              {{ offer.supplier_phone }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-muted">Для этого товара пока нет предложений.</p>
+    {% endfor %}
+  {% else %}
+    <h1 class="text-danger">Товар не найден</h1>
+    <p>Товар с указанным идентификатором отсутствует.</p>
+  {% endif %}
+
+  <a href="{% url 'products:list' %}" class="btn btn-outline-secondary mt-3">← К списку товаров</a>
 {% endblock %}

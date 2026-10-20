@@ -1,38 +1,86 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block title %}
-    {% if supplier %}
-        {{ supplier.name }} — Сервис сравнения предложений
-    {% else %}
-        Поставщик не найден
-    {% endif %}
+  {% if supplier %}
+    {{ supplier.name }} — Сервис сравнения предложений
+  {% else %}
+    Поставщик не найден
+  {% endif %}
 {% endblock %}
 
 {% block content %}
-    {% if supplier %}
+  {% if supplier %}
     <div class="card">
-        <div class="card-body">
-            <h1 class="card-title">{{ supplier.name }}</h1>
-            <p class="card-text">
-                <strong>ID:</strong> {{ supplier.id }}
-            </p>
-            <p class="card-text">
-                <strong>ИНН:</strong> {{ supplier.inn }}
-            </p>
-            <p class="card-text">
-                <strong>Телефон:</strong> {{ supplier.phone }}
-            </p>
-            <p class="card-text">
-                <strong>Email:</strong> {{ supplier.email }}
-            </p>
-        </div>
+      <div class="card-body">
+        <h1 class="card-title">{{ supplier.name }}</h1>
+        <p class="card-text">
+          <strong>ID:</strong> {{ supplier.supplier_id }}
+        </p>
+        <p class="card-text">
+          <strong>ИНН:</strong> {{ supplier.inn }}
+        </p>
+        <p class="card-text">
+          <strong>Телефон:</strong> {{ supplier.phone }}
+        </p>
+        <p class="card-text">
+          <strong>Email:</strong> {{ supplier.email }}
+        </p>
+      </div>
     </div>
 
-    {% else %}
-        <h1 class="text-danger">Поставщик не найден</h1>
-        <p>Поставщик с указанным идентификатором отсутствует.</p>
-    {% endif %}
-    <a href="{% url 'suppliers:list' %}" class="btn btn-outline-secondary mt-3">
-        ← к списку поставщиков
-    </a>
+    <div class="mt-4 mb-3">
+      <h3>Предложения</h3>
+    </div>
+    {% for offer in offers %}
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5>Товар</h5>
+          <ul class="list-group">
+            <li class="list-group-item">
+              <strong>Название:</strong> {{ offer.product_name }}
+            </li>
+            <li class="list-group-item">
+              <strong>Описание:</strong>
+              {{ offer.product_description }}
+            </li>
+            <li class="list-group-item">
+              <strong>Страна произовдства:</strong>
+              {{ offer.product_country|default:'Не указана' }}
+            </li>
+          </ul>
+          <h5>Заказчик</h5>
+          <ul class="list-group">
+            <li class="list-group-item">
+              <strong>Имя / название:</strong> 
+              {{ offer.buyers_name }}
+            </li>
+            <li class="list-group-item">
+              <strong>Тип:</strong>
+              {{ offer.buyers_type }}
+            </li>
+          </ul>
+          <h5>Предложение</h5>
+          <ul class="list-group">
+            <li class="list-group-item">
+              <strong>Цена:</strong> {{ offer.price }} ₽
+            </li>
+            <li class="list-group-item">
+              <strong>Минимальное количество:</strong>
+              {{ offer.min_lots }}
+            </li>
+            <li class="list-group-item">
+              <strong>Срок доставки:</strong>
+              {{ offer.delivery_time_days }} дней
+            </li>
+          </ul>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-muted">У этого поставщика пока нет предложений.</p>
+    {% endfor %}
+  {% else %}
+    <h1 class="text-danger">Поставщик не найден</h1>
+    <p>Поставщик с указанным идентификатором отсутствует.</p>
+  {% endif %}
+  <a href="{% url 'suppliers:list' %}" class="btn btn-outline-secondary mt-3">← к списку поставщиков</a>
 {% endblock %}

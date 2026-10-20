@@ -1,0 +1,14 @@
+[
+    {
+        "user_id": 1,
+        "supplier_id": 1
+    },
+    {
+        "user_id": 1,
+        "supplier_id": 2
+    },
+    {
+        "user_id": 2,
+        "supplier_id": 3
+    }
+]

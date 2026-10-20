@@ -7,7 +7,7 @@
 
 {% block content %}
     <h1>Предложения</h1>
-
+    <p>Всего предложений: {{ offers|length }}</p>
     {% for offer in offers %}
         {% include "offers/includes/offer_card.html" %}
     {% empty %}

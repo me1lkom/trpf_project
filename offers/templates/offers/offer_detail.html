@@ -1,80 +1,91 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block title %}
-    {% if offer %}
-        {{ offer.product.name }} — Сервис сравнения предложений
-    {% else %}
-        Предложение не найдено
-    {% endif %}
+  {% if offer %}
+    {{ offer.product_name }} — Сервис сравнения предложений
+  {% else %}
+    Предложение не найдено
+  {% endif %}
 {% endblock %}
 
 {% block content %}
-    {% if offer %}
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">{{ offer.product.name }} —
-                    {{ offer.supplier.name }}</h5>
-                <h6>Предложение</h6>
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <strong>ID:</strong>
-                        {{ offer.id }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Цена:</strong>
-                        {{ offer.price }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Минимальное количество:</strong>
-                        {{ offer.min_lots }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Срок доставки:</strong>
-                        {{ offer.delivery_time_days }}
-                    </li>
-                </ul>
-                <h6>Товар</h6>
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <strong>Название товара:</strong>
-                        {{ offer.product.name }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Описание:</strong>
-                        {{ offer.product.description }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Страна производства:</strong>
-                        {{ offer.product.country }}
-                    </li>
-                </ul>
-                <h6>Поставщик</h6>
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <strong>Название поставщика:</strong>
-                        {{ offer.supplier.name }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>ИНН:</strong>
-                        {{ offer.supplier.inn }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Номер:</strong>
-                        {{ offer.supplier.phone }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Email:</strong>
-                        {{ offer.supplier.email }}
-                    </li>
-                </ul>
-            </div>
-        </div>
-    {% else %}
-        <h1 class="text-danger">Предложение не найдено</h1>
-        <p>Предложение с указанным идентификатором отсутствует.</p>
-    {% endif %}
+  {% if offer %}
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title">
+          {{ offer.product_name }} —
+          {{ offer.supplier_name }}
+        </h2>
+        <h6 class="mt-3">Предложение</h6>
+        <ul class="list-group">
+          <li class="list-group-item">
+            <strong>ID:</strong>
+            {{ offer.offer_id }}
+          </li>
+          <li class="list-group-item">
+            <strong>Цена:</strong>
+            {{ offer.price }} ₽
+          </li>
+          <li class="list-group-item">
+            <strong>Минимальное количество:</strong>
+            {{ offer.min_lots }}
+          </li>
+          <li class="list-group-item">
+            <strong>Срок доставки:</strong>
+            {{ offer.delivery_time_days }} дней
+          </li>
+        </ul>
+        <h6 class="mt-3">Заказчик</h6>
+        <ul class="list-group">
+          <li class="list-group-item">
+            <strong>Имя / название:</strong>
+            {{ offer.buyers_name }}
+          </li>
+          <li class="list-group-item">
+            <strong>Тип:</strong>
+            {{ offer.buyers_type }}
+          </li>
+        </ul>
+        <h6 class="mt-3">Товар</h6>
+        <ul class="list-group">
+          <li class="list-group-item">
+            <strong>Название товара:</strong>
+            {{ offer.product_name }}
+          </li>
+          <li class="list-group-item">
+            <strong>Описание:</strong>
+            {{ offer.product_description }}
+          </li>
+          <li class="list-group-item">
+            <strong>Страна производства:</strong>
+            {{ offer.product_country|default:'Не указана' }}
+          </li>
+        </ul>
+        <h6 class="mt-3">Поставщик</h6>
+        <ul class="list-group">
+          <li class="list-group-item">
+            <strong>Название поставщика:</strong>
+            {{ offer.supplier_name }}
+          </li>
+          <li class="list-group-item">
+            <strong>ИНН:</strong>
+            {{ offer.supplier_inn }}
+          </li>
+          <li class="list-group-item">
+            <strong>Номер:</strong>
+            {{ offer.supplier_phone }}
+          </li>
+          <li class="list-group-item">
+            <strong>Email:</strong>
+            {{ offer.supplier_email }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  {% else %}
+    <h1 class="text-danger">Предложение не найдено</h1>
+    <p>Предложение с указанным идентификатором отсутствует.</p>
+  {% endif %}
 
-    <a href="{% url 'offers:list' %}" class="btn btn-outline-secondary mt-3">
-        ← к списку предложений
-    </a>
+  <a href="{% url 'offers:list' %}" class="btn btn-outline-secondary mt-3">← к списку предложений</a>
 {% endblock %}
