@@ -9,22 +9,42 @@ def supplier_list(request: HttpRequest) -> HttpResponse:
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
 
-    suppliers: list[sqlite3.Row] = conn.execute(
-        """
-        SELECT
-            supplier_id,
-            name,
-            inn,
-            phone,
-            email
-        FROM suppliers
-        ORDER BY name;
-        """
-    ).fetchall()
+    searching_supplier = request.GET.get('search', default='').strip()
+
+    if searching_supplier == '':
+        suppliers: list[sqlite3.Row] = conn.execute(
+            """
+            SELECT
+                supplier_id,
+                name,
+                inn,
+                phone,
+                email
+            FROM suppliers
+            ORDER BY name;
+            """
+        ).fetchall()
+    else:
+        suppliers: list[sqlite3.Row] = conn.execute(
+            """
+            SELECT
+                supplier_id,
+                name,
+                inn,
+                phone,
+                email
+            FROM suppliers
+            WHERE name LIKE ?
+            ORDER BY name;
+            """,
+            (f'%{searching_supplier}%',)
+        ).fetchall()
+
     conn.close()
 
-    context: dict[str, list[sqlite3.Row]] = {
+    context: dict[str, list[sqlite3.Row] | str] = {
         'suppliers': suppliers,
+        'searching_supplier': searching_supplier
     }
 
     return render(request, "suppliers/supplier_list.html", context)

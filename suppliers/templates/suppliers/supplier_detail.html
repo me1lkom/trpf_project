@@ -34,7 +34,7 @@
     {% for offer in offers %}
       <div class="card mb-3">
         <div class="card-body">
-          <h5>Товар</h5>
+          <h5 class="mt-3">Товар</h5>
           <ul class="list-group">
             <li class="list-group-item">
               <strong>Название:</strong> {{ offer.product_name }}
@@ -44,11 +44,11 @@
               {{ offer.product_description }}
             </li>
             <li class="list-group-item">
-              <strong>Страна произовдства:</strong>
+              <strong>Страна производства:</strong>
               {{ offer.product_country|default:'Не указана' }}
             </li>
           </ul>
-          <h5>Заказчик</h5>
+          <h5 class="mt-3">Заказчик</h5>
           <ul class="list-group">
             <li class="list-group-item">
               <strong>Имя / название:</strong> 
@@ -59,7 +59,7 @@
               {{ offer.buyers_type }}
             </li>
           </ul>
-          <h5>Предложение</h5>
+          <h5 class="mt-3">Предложение</h5>
           <ul class="list-group">
             <li class="list-group-item">
               <strong>Цена:</strong> {{ offer.price }} ₽
