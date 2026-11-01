@@ -1,48 +1,29 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpRequest, HttpResponse
-import sqlite3
-
-DB_PATH = 'data/trpf.sqlite'
+from django.db.models import QuerySet
+from suppliers.models import Supplier, SupplierMember
+from offers.models import Offer
 
 
 def supplier_list(request: HttpRequest) -> HttpResponse:
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-
     searching_supplier = request.GET.get('search', default='').strip()
 
+    suppliers: QuerySet[Supplier]
+
     if searching_supplier == '':
-        suppliers: list[sqlite3.Row] = conn.execute(
-            """
-            SELECT
-                supplier_id,
-                name,
-                inn,
-                phone,
-                email
-            FROM suppliers
-            ORDER BY name;
-            """
-        ).fetchall()
+        suppliers = (
+            Supplier
+            .objects
+            .all()
+        )
     else:
-        suppliers = conn.execute(
-            """
-            SELECT
-                supplier_id,
-                name,
-                inn,
-                phone,
-                email
-            FROM suppliers
-            WHERE name LIKE ?
-            ORDER BY name;
-            """,
-            (f'%{searching_supplier}%',)
-        ).fetchall()
+        suppliers = (
+            Supplier
+            .objects
+            .filter(name__icontains=searching_supplier)
+        )
 
-    conn.close()
-
-    context: dict[str, list[sqlite3.Row] | str] = {
+    context: dict[str, QuerySet[Supplier] | str] = {
         'suppliers': suppliers,
         'searching_supplier': searching_supplier
     }
@@ -51,63 +32,25 @@ def supplier_list(request: HttpRequest) -> HttpResponse:
 
 
 def supplier_details(request: HttpRequest, supplier_id: int) -> HttpResponse:
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
+    supplier: Supplier = get_object_or_404(
+        Supplier.objects.prefetch_related(
+            'offers__product',
+            'members__user',
+        ),
+        pk=supplier_id
+    )
 
-    supplier: sqlite3.Row | None = conn.execute(
-        """
-        SELECT
-            supplier_id,
-            name,
-            inn,
-            phone,
-            email
-        FROM suppliers
-        WHERE supplier_id = ?;
-        """,
-        (supplier_id,)
-    ).fetchone()
+    offers: QuerySet[Offer] = supplier.offers.all()
+    members: QuerySet[SupplierMember] = supplier.members.all()
 
-    offers: list[sqlite3.Row] = conn.execute(
-        """
-        SELECT
-            offers.offer_id,
-            offers.price,
-            offers.min_lots,
-            offers.delivery_time_days,
-            products.name as product_name,
-            products.description as product_description,
-            products.country as product_country,
-            COALESCE(users.name, suppliers.name) as buyers_name,
-            CASE
-                WHEN product_buyers.user_id IS NOT NULL
-                    THEN 'Физ лицо'
-                WHEN product_buyers.supplier_id IS NOT NULL
-                    THEN 'Организация'
-            END AS buyers_type
-        FROM offers
-        JOIN products ON products.product_id = offers.product_id
-        LEFT JOIN product_buyers ON
-            product_buyers.product_id = products.product_id
-        LEFT JOIN users ON
-            product_buyers.user_id = users.user_id
-        LEFT JOIN suppliers ON
-            product_buyers.supplier_id = suppliers.supplier_id
-        WHERE offers.supplier_id = ?;
-        """,
-        (supplier_id,)
-    ).fetchall()
-
-    conn.close()
-
-    context: dict[str, sqlite3.Row | None | list[sqlite3.Row]] = {
+    context = {
         'supplier': supplier,
-        'offers': offers
+        'offers': offers,
+        'members': members
     }
 
     return render(
         request,
         'suppliers/supplier_detail.html',
         context,
-        status=404 if supplier is None else 200,
     )

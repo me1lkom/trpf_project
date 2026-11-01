@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
-import sqlite3
-
-DB_PATH = 'data/trpf.sqlite'
+from django.db.models import QuerySet, Count
+from suppliers.models import Supplier
+from products.models import Product
+from offers.models import Offer
+from users.models import User
 
 
 def index(request: HttpRequest) -> HttpResponse:
@@ -10,70 +12,28 @@ def index(request: HttpRequest) -> HttpResponse:
 
 
 def statistics(request: HttpRequest) -> HttpResponse:
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
 
-    offers_to_suppliers: list[sqlite3.Row] = conn.execute(
-        """
-        SELECT
-            suppliers.supplier_id,
-            suppliers.name,
-            COUNT(offers.offer_id) as count_offers
-        FROM suppliers
-        LEFT JOIN offers ON suppliers.supplier_id = offers.supplier_id
-        GROUP BY suppliers.supplier_id, suppliers.name
-        ORDER BY suppliers.supplier_id;
-        """
-    ).fetchall()
+    offers_to_suppliers: QuerySet[Supplier] = (
+        Supplier.objects
+        .annotate(count_offers=Count('offers'))
+        .order_by('id')
+    )
 
-    offers_to_products: list[sqlite3.Row] = conn.execute(
-        """
-        SELECT
-            products.product_id,
-            products.name,
-            COUNT(offers.offer_id) as count_offers
-        FROM products
-        LEFT JOIN offers ON products.product_id = offers.product_id
-        GROUP BY products.product_id, products.name
-        ORDER BY products.product_id;
-        """
-    ).fetchall()
+    offers_to_products: QuerySet[Product] = (
+        Product.objects
+        .annotate(count_offers=Count('offers'))
+        .order_by('id')
+    )
 
-    count_offers: sqlite3.Row | None = conn.execute(
-        """
-        SELECT
-            COUNT(*) as count_offers
-        FROM offers;
-        """
-    ).fetchone()
+    count_offers: int = Offer.objects.count()
 
-    count_suppliers: sqlite3.Row | None = conn.execute(
-        """
-        SELECT
-            COUNT(*) as count_suppliers
-        FROM suppliers;
-        """
-    ).fetchone()
+    count_suppliers: int = Supplier.objects.count()
 
-    count_users: sqlite3.Row | None = conn.execute(
-        """
-        SELECT
-            COUNT(*) as count_users
-        FROM users;
-        """
-    ).fetchone()
+    count_users: int = User.objects.count()
 
-    count_products: sqlite3.Row | None = conn.execute(
-        """
-        SELECT
-            COUNT(*) as count_products
-        FROM products;
-        """
-    ).fetchone()
+    count_products: int = Product.objects.count()
 
-    conn.close()
-
-    context: dict[str, list[sqlite3.Row] | sqlite3.Row | None] = {
+    context: dict[str, int | QuerySet[Product] | QuerySet[Supplier]] = {
         'offers_to_suppliers': offers_to_suppliers,
         'offers_to_products': offers_to_products,
         'count_offers': count_offers,

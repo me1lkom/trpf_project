@@ -1,28 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpRequest, HttpResponse
-import sqlite3
-
-DB_PATH = 'data/trpf.sqlite'
+from django.db.models import QuerySet, Min, Max, Avg
+from django.db.models.functions import Round
+from products.models import Product
+from offers.models import Offer
 
 
 def product_list(request: HttpRequest) -> HttpResponse:
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
+    products: QuerySet[Product] = Product.objects.all().order_by('id')
 
-    products: list[sqlite3.Row] = conn.execute(
-        """
-        SELECT
-            product_id,
-            name,
-            description,
-            country
-        FROM products
-        ORDER BY product_id;
-        """
-    ).fetchall()
-    conn.close()
-
-    context: dict[str, list[sqlite3.Row]] = {
+    context: dict[str, QuerySet[Product]] = {
         'products': products,
     }
 
@@ -30,88 +17,64 @@ def product_list(request: HttpRequest) -> HttpResponse:
 
 
 def product_details(request: HttpRequest, product_id: int) -> HttpResponse:
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
+    product: Product = get_object_or_404(
+        Product.objects.select_related(
+            'buyer_record__user',
+            'buyer_record__supplier'
+        ),
+        pk=product_id
+    )
 
-    product: sqlite3.Row | None = conn.execute(
-        """
-        SELECT
-            products.product_id,
-            products.name,
-            products.description,
-            products.country,
-            COALESCE(users.name, suppliers.name) as buyers_name,
-            CASE
-                WHEN product_buyers.user_id IS NOT NULL
-                    THEN 'Физ лицо'
-                WHEN product_buyers.supplier_id IS NOT NULL
-                    THEN 'Организация'
-            END AS buyers_type
-        FROM products
-        LEFT JOIN product_buyers
-            ON product_buyers.product_id = products.product_id
-        LEFT JOIN users
-            ON product_buyers.user_id = users.user_id
-        LEFT JOIN suppliers
-            ON product_buyers.supplier_id = suppliers.supplier_id
-        WHERE products.product_id = ?;
-        """,
-        (product_id,),
-    ).fetchone()
+    buyer = getattr(product, 'buyer_record', None)
+
+    if buyer is None:
+        buyers_name = None
+        buyers_type = None
+    elif buyer.user_id is not None:
+        buyers_name = buyer.user.name
+        buyers_type = 'Физ лицо'
+    else:
+        buyers_name = buyer.supplier.name
+        buyers_type = 'Организация'
 
     order_by = {
-        'default': 'ORDER BY offers.offer_id',
-        'price': 'ORDER BY offers.price',
-        'delivery': 'ORDER BY offers.delivery_time_days ASC'
+        'default': 'id',
+        'price': 'price',
+        'delivery': 'delivery_time_days'
     }
 
     sort = request.GET.get('sort', 'default')
     sorting = order_by.get(sort, order_by['default'])
 
-    query = f"""
-        SELECT
-            offers.offer_id,
-            offers.price,
-            offers.min_lots,
-            offers.delivery_time_days,
-            products.name as product_name,
-            suppliers.name as supplier_name,
-            suppliers.phone as supplier_phone
-        FROM offers
-        JOIN products ON products.product_id = offers.product_id
-        JOIN suppliers ON suppliers.supplier_id = offers.supplier_id
-        WHERE offers.product_id = ?
-        {sorting};
-        """
+    print(sort, sorting)
 
-    offers: list[sqlite3.Row] = conn.execute(
-        query,
-        (product_id, )
-    ).fetchall()
+    offers: QuerySet[Offer] = (
+        Offer.objects
+        .filter(product_id=product_id)
+        .select_related('supplier')
+        .order_by(sorting)
+    )
 
-    price_stat: sqlite3.Row | None = conn.execute(
-        """
-        SELECT
-            MIN(price) as min_price,
-            MAX(price) as max_price,
-            ROUND(AVG(price), 2) as avg_price
-        FROM offers
-        WHERE offers.product_id = ?;
-        """,
-        (product_id,),
-    ).fetchone()
+    price_stat = (
+        Offer.objects
+        .filter(product_id=product_id)
+        .aggregate(
+            min_price=Min('price'),
+            max_price=Max('price'),
+            avg_price=Round(Avg('price'), 2),
+        )
+    )
 
-    conn.close()
-
-    context: dict[str, sqlite3.Row | None | list[sqlite3.Row]] = {
+    context = {
         'product': product,
         'offers': offers,
+        'buyers_name': buyers_name,
+        'buyers_type': buyers_type,
         'price_stat': price_stat
     }
 
     return render(
         request,
         'products/product_detail.html',
-        context,
-        status=404 if product is None else 200,
+        context
     )

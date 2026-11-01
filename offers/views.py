@@ -1,33 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpRequest, HttpResponse
-import sqlite3
-
-DB_PATH = 'data/trpf.sqlite'
+from django.db.models import QuerySet
+from offers.models import Offer
 
 
 def offer_list(request: HttpRequest) -> HttpResponse:
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
+    offers: QuerySet[Offer] = (
+        Offer.objects
+        .select_related('product', 'supplier')
+        .order_by('id')
+    )
 
-    offers: list[sqlite3.Row] = conn.execute(
-        """
-        SELECT
-            offers.offer_id,
-            offers.price,
-            offers.min_lots,
-            offers.delivery_time_days,
-            products.name as product_name,
-            suppliers.name as supplier_name
-        FROM offers
-        JOIN products ON products.product_id = offers.product_id
-        JOIN suppliers ON suppliers.supplier_id = offers.supplier_id
-        ORDER BY offers.offer_id;
-        """
-    ).fetchall()
-
-    conn.close()
-
-    context: dict[str, list[sqlite3.Row]] = {
+    context: dict[str, QuerySet[Offer]] = {
         'offers': offers,
     }
 
@@ -35,53 +19,36 @@ def offer_list(request: HttpRequest) -> HttpResponse:
 
 
 def offer_details(request: HttpRequest, offer_id: int) -> HttpResponse:
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
+    offer: Offer = get_object_or_404(
+        Offer.objects.select_related(
+            'product',
+            'supplier',
+            'product__buyer_record__user',
+            'product__buyer_record__supplier'
+        ),
+        pk=offer_id
+    )
 
-    offer: sqlite3.Row | None = conn.execute(
-        """
-        SELECT
-            offers.offer_id,
-            offers.price,
-            offers.min_lots,
-            offers.delivery_time_days,
-            products.name as product_name,
-            products.description as product_description,
-            products.country as product_country,
-            suppliers.name as supplier_name,
-            suppliers.inn as supplier_inn,
-            suppliers.phone as supplier_phone,
-            suppliers.email as supplier_email,
-            COALESCE(buyers_users.name, buyers_suppliers.name) as buyers_name,
-            CASE
-                WHEN product_buyers.user_id IS NOT NULL
-                    THEN 'Физ лицо'
-                WHEN product_buyers.supplier_id IS NOT NULL
-                    THEN 'Организация'
-            END AS buyers_type
-        FROM offers
-        JOIN products ON products.product_id = offers.product_id
-        JOIN suppliers ON suppliers.supplier_id = offers.supplier_id
-        LEFT JOIN product_buyers ON
-            product_buyers.product_id = products.product_id
-        LEFT JOIN users AS buyers_users ON
-            product_buyers.user_id = buyers_users.user_id
-        LEFT JOIN suppliers AS buyers_suppliers ON
-            product_buyers.supplier_id = buyers_suppliers.supplier_id
-        WHERE offers.offer_id = ?;
-        """,
-        (offer_id,)
-    ).fetchone()
+    buyer = getattr(offer.product, 'buyer_record', None)
 
-    conn.close()
+    if buyer is None:
+        buyers_name = None
+        buyers_type = None
+    elif buyer.user_id is not None:
+        buyers_name = buyer.user.name
+        buyers_type = 'Физ лицо'
+    else:
+        buyers_name = buyer.supplier.name
+        buyers_type = 'Организация'
 
-    context: dict[str, sqlite3.Row | None] = {
-        'offer': offer
+    context = {
+        'offer': offer,
+        'buyers_name': buyers_name,
+        'buyers_type': buyers_type
     }
 
     return render(
         request,
         "offers/offer_detail.html",
-        context,
-        status=404 if offer is None else 200
+        context
     )

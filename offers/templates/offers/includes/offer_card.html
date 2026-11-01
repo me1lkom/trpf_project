@@ -1,12 +1,12 @@
 <article class="card offer-card mb-3">
     <div class="card-body">
         <h4 class="card-title">
-            {{ offer.product_name }}
+            {{ offer.product.name }}
         </h4>
 
         <p class="card-text">
             <strong>Поставщик:</strong>
-            {{ offer.supplier_name }}
+            {{ offer.supplier.name }}
         </p>
 
         <div class="row mb-3">
@@ -27,7 +27,7 @@
         </div>
 
         <a
-            href="{% url 'offers:detail' offer.offer_id %}"
+            href="{% url 'offers:detail' offer.id %}"
             class="btn btn-primary"
         >
             Подробнее
