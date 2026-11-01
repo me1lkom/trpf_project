@@ -1,36 +1,34 @@
 <article class="card offer-card mb-3">
-    <div class="card-body">
-        <h4 class="card-title">
-            {{ offer.product.name }}
-        </h4>
+  <div class="card-body">
+    <h4 class="card-title">{{ offer.product.name }}</h4>
 
-        <p class="card-text">
-            <strong>Поставщик:</strong>
-            {{ offer.supplier.name }}
-        </p>
+    <p class="card-text">
+      <strong>Поставщик:</strong>
+      {{ offer.supplier.name }}
+    </p>
 
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <strong>Цена:</strong>
-                {{ offer.price }} ₽
-            </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <strong>Цена:</strong>
+        {{ offer.price }} ₽
+      </div>
 
-            <div class="col-md-4">
-                <strong>Минимальная партия:</strong>
-                {{ offer.min_lots }}
-            </div>
+      <div class="col-md-4">
+        <strong>Минимальная партия:</strong>
+        {{ offer.min_lots }}
+      </div>
 
-            <div class="col-md-4">
-                <strong>Срок доставки:</strong>
-                {{ offer.delivery_time_days }} дней
-            </div>
-        </div>
+      <div class="col-md-4">
+        <strong>Срок доставки:</strong>
+        {{ offer.delivery_time_days }} дней
+      </div>
 
-        <a
-            href="{% url 'offers:detail' offer.id %}"
-            class="btn btn-primary"
-        >
-            Подробнее
-        </a>
+      <div class="col-md-4">
+        <strong>Страна произовдства:</strong>
+        {{ offer.product.country }}
+      </div>
     </div>
+
+    <a href="{% url 'offers:detail' offer.id %}" class="btn btn-primary">Подробнее</a>
+  </div>
 </article>

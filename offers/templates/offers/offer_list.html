@@ -1,16 +1,115 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block title %}
-    Список предложений
+  Список предложений
 {% endblock %}
 
-
 {% block content %}
-    <h1>Предложения</h1>
-    <p>Всего предложений: {{ offers|length }}</p>
-    {% for offer in offers %}
-        {% include "offers/includes/offer_card.html" %}
-    {% empty %}
-        <p>Предложения не найдены.</p>
-    {% endfor %}
+  <h1>Предложения</h1>
+
+  <form method="get" class="card mb-4">
+    <div class="card-body">
+      <h4 class="card-title mb-4">Фильтрация предложений</h4>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label for="max_price" class="form-label">Максимальная цена, ₽</label>
+          <input type="number" id="max_price" name="max_price" class="form-control" placeholder="Например, 10000" min="0" step="0.01" value="{{ request.GET.max_price|default:'' }}" />
+        </div>
+
+        <div class="col-md-6">
+          <label for="max_delivery" class="form-label">Срок доставки до, дней</label>
+          <input type="number" id="max_delivery" name="max_delivery" class="form-control" placeholder="Например, 7" min="0" step="1" value="{{ request.GET.max_delivery|default:'' }}" />
+        </div>
+
+        <div class="col-md-6">
+          <label for="country" class="form-label">Страна производства</label>
+          <input type="text" id="country" name="country" class="form-control" placeholder="Например, Китай" value="{{ request.GET.country|default:'' }}" />
+        </div>
+
+        <div class="col-md-6">
+          <label for="exclude_supplier" class="form-label">Исключить поставщика</label>
+          <select id="exclude_supplier" name="exclude_supplier" class="form-select">
+            <option value="">Никого</option>
+            {% for supplier in suppliers %}
+              <option value="{{ supplier.id }}" {% if  supplier_selected == supplier.id %}selected{% endif %}>
+                {{ supplier.name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <h4 class="card-title mb-4 mt-4">Сортировка предложений</h4>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label for="sort" class="form-label">Сортировать по</label>
+          <select id="sort" name="sort" class="form-select">
+            <option value="default" {% if request.GET.sort == 'default' %}selected{% endif %}>ID</option>
+            <option value="price" {% if request.GET.sort == 'price' %}selected{% endif %}>Цене</option>
+            <option value="delivery" {% if request.GET.sort == 'delivery' %}selected{% endif %}>Сроку поставки</option>
+            <option value="supplier_name" {% if request.GET.sort == 'supplier_name' %}selected{% endif %}>Названию поставщика</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-primary">Применить</button>
+
+        <a href="{% url 'offers:list' %}" class="btn btn-outline-secondary">Сбросить</a>
+      </div>
+    </div>
+  </form>
+
+  {% for offer in page_obj %}
+    {% include 'offers/includes/offer_card.html' %}
+  {% empty %}
+    <p>Предложения не найдены.</p>
+  {% endfor %}
+
+
+
+{% if page_obj.paginator.num_pages > 1 %}
+  <nav aria-label="Навигация по страницам">
+    <ul class="pagination justify-content-center">
+      {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="{% querystring page=page_obj.previous_page_number %}">
+            Назад
+          </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Назад</span>
+        </li>
+      {% endif %}
+      {% for page_number in page_obj.paginator.page_range %}
+        {% if page_number == page_obj.number %}
+          <li class="page-item active" aria-current="page">
+            <span class="page-link">{{ page_number }}</span>
+          </li>
+          {% else %}
+          <li class="page-item">
+          <a class="page-link" href="{% querystring page=page_number %}">
+          {{ page_number }}
+          </a>
+          </li>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+      <li class="page-item">
+      <a class="page-link" href="{% querystring page=page_obj.next_page_number %}">
+      Далее
+      </a>
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+      <span class="page-link">Далее</span>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+{% endif %}
+
 {% endblock %}
