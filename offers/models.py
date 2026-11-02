@@ -22,6 +22,5 @@ class Offer(models.Model):
         verbose_name = "Предложение"
         verbose_name_plural = "Предложения"
 
-
     def __str__(self) -> str:
         return f'Предложение {self.id}'

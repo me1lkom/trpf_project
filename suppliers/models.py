@@ -12,7 +12,7 @@ class Supplier(models.Model):
         verbose_name_plural = "Поставщики"
 
     def __str__(self) -> str:
-        return self.name
+        return str(self.name)
 
 
 class SupplierMember(models.Model):

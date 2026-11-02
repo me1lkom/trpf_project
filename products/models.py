@@ -10,7 +10,8 @@ class Product(models.Model):
         verbose_name = "Продукт"
 
     def __str__(self) -> str:
-        return self.name
+        return str(self.name)
+
 
 class ProductBuyers(models.Model):
     product = models.OneToOneField(
